@@ -3,7 +3,6 @@ pipeline {
 
   environment {
     COMPOSE_PROJECT_NAME = "my_flask_app"
-    DOCKERHUB_NAMESPACE = "arjun79"  // <<--- CHANGE THIS
   }
 
   stages {
@@ -17,23 +16,6 @@ pipeline {
     stage('Build Docker images') {
       steps {
         sh 'docker-compose build'
-      }
-    }
-
-    stage('Tag images') {
-      steps {
-        sh 'docker tag devops-microservices-main_user-service:latest $DOCKERHUB_NAMESPACE/user-service:latest'
-        sh 'docker tag devops-microservices-main_data-service:latest $DOCKERHUB_NAMESPACE/data-service:latest'
-      }
-    }
-
-    stage('Push images to Docker Hub') {
-      steps {
-        withCredentials([usernamePassword(credentialsId: 'dockerhub-creds', usernameVariable: 'DOCKER_USER', passwordVariable: 'DOCKER_PASS')]) {
-          sh 'echo $DOCKER_PASS | docker login -u $DOCKER_USER --password-stdin'
-          sh 'docker push $DOCKERHUB_NAMESPACE/user-service:latest'
-          sh 'docker push $DOCKERHUB_NAMESPACE/data-service:latest'
-        }
       }
     }
 
