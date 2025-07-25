@@ -7,27 +7,21 @@ pipeline {
 
   stages {
 
-    stage('Clone repo') {
-      steps {
-        git branch: 'main', url: 'https://github.com/arjun7976/devops-microservices-main.git'
-      }
-    }
-
     stage('Build Docker images') {
       steps {
-        sh 'docker-compose build'
+        sh 'docker compose build'
       }
     }
 
     stage('Run containers') {
       steps {
-        sh 'docker-compose up -d'
+        sh 'docker compose up -d'
       }
     }
 
     stage('Check services') {
       steps {
-        sh 'docker-compose ps'
+        sh 'docker compose ps'
       }
     }
 
@@ -40,7 +34,7 @@ pipeline {
 
     stage('Clean up') {
       steps {
-        sh 'docker-compose down'
+        sh 'docker compose down'
       }
     }
   }
