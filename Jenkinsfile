@@ -3,14 +3,14 @@ pipeline {
 
   environment {
     COMPOSE_PROJECT_NAME = "my_flask_app"
-    DOCKERHUB_NAMESPACE = "arjun74"
+    DOCKERHUB_NAMESPACE = "arjun79"  // <<--- CHANGE THIS
   }
 
   stages {
 
     stage('Clone repo') {
       steps {
-        git 'https://your-repo-url.git'
+        git 'https://github.com/arjun7976/devops-microservices-main.git'
       }
     }
 
@@ -20,11 +20,10 @@ pipeline {
       }
     }
 
-    stage('Tag images for Docker Hub') {
+    stage('Tag images') {
       steps {
-        // Note: docker-compose names images as folder_service
-        sh 'docker tag user-service_user-service:latest $DOCKERHUB_NAMESPACE/user-service:latest'
-        sh 'docker tag data-service_data-service:latest $DOCKERHUB_NAMESPACE/data-service:latest'
+        sh 'docker tag devops-microservices-main_user-service:latest $DOCKERHUB_NAMESPACE/user-service:latest'
+        sh 'docker tag devops-microservices-main_data-service:latest $DOCKERHUB_NAMESPACE/data-service:latest'
       }
     }
 
@@ -59,8 +58,7 @@ pipeline {
 
     stage('Clean up') {
       steps {
-        // Optional: If you want to stop containers after test
-        // sh 'docker-compose down'
+        sh 'docker-compose down'
       }
     }
   }
