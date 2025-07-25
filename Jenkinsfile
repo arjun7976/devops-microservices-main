@@ -9,7 +9,7 @@ pipeline {
 
     stage('Clone repo') {
       steps {
-        git 'https://github.com/arjun7976/devops-microservices-main.git'
+        git branch: 'main', url: 'https://github.com/arjun7976/devops-microservices-main.git'
       }
     }
 
