@@ -1,19 +1,41 @@
-version: '3.8'
+pipeline {
+  agent any
 
-services:
-  jenkins:
-    image: jenkins/jenkins:lts
-    privileged: true
-    user: root
-    ports:
-      - "8080:8080"
-      - "50000:50000"
-    volumes:
-      - jenkins_home:/var/jenkins_home
-      - /var/run/docker.sock:/var/run/docker.sock
-    container_name: jenkins-docker
-    environment:
-      - DOCKER_HOST=unix:///var/run/docker.sock
+  environment {
+    COMPOSE_PROJECT_NAME = "my_flask_app"
+  }
 
-volumes:
-  jenkins_home:
+  stages {
+
+    stage('Build Docker images') {
+      steps {
+        sh 'docker compose build'
+      }
+    }
+
+    stage('Run containers') {
+      steps {
+        sh 'docker compose up -d'
+      }
+    }
+
+    stage('Check services') {
+      steps {
+        sh 'docker compose ps'
+      }
+    }
+
+    stage('Test endpoints') {
+      steps {
+        sh 'curl -f http://localhost:5000/ || exit 1'
+        sh 'curl -f http://localhost:5001/user/alice || exit 1'
+      }
+    }
+
+    stage('Clean up') {
+      steps {
+        sh 'docker compose down'
+      }
+    }
+  }
+}
